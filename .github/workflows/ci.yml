@@ -46,7 +46,7 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1.0.7
         with:
           profile: minimal
           toolchain: ${{ matrix.RUST }}
@@ -168,7 +168,7 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1.0.7
         with:
           profile: minimal
           toolchain: ${{ matrix.RUST }}
@@ -204,7 +204,7 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.9
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1.0.7
         with:
           profile: minimal
           toolchain: nightly
@@ -268,7 +268,7 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: ${{ matrix.PYTHON.VERSION }}
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1.0.7
         with:
           profile: minimal
           toolchain: ${{ matrix.RUST }}
@@ -330,7 +330,7 @@ jobs:
             src/rust/target/
           key: ${{ runner.os }}-${{ matrix.WINDOWS.ARCH }}-${{ steps.setup-python.outputs.python-version }}-cargo-${{ hashFiles('**/Cargo.lock') }}
 
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1.0.7
         with:
           profile: minimal
           toolchain: ${{ matrix.RUST }}
@@ -391,7 +391,7 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: ${{ matrix.PYTHON }}
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1.0.7
         with:
           profile: minimal
           toolchain: ${{ matrix.RUST }}
@@ -416,7 +416,7 @@ jobs:
         uses: actions/setup-python@v2.2.2
         with:
           python-version: 3.9
-      - uses: actions-rs/toolchain@v1
+      - uses: actions-rs/toolchain@v1.0.7
         with:
           profile: minimal
           toolchain: stable
