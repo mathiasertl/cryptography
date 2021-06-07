@@ -4,9 +4,9 @@ version = 3
 
 [[package]]
 name = "asn1"
-version = "0.3.6"
+version = "0.5.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
-checksum = "98ff0918103df4ea847a9a11dba5960b6e5743835560494c6ca3307c9063d931"
+checksum = "f4e2ec2f073674e49321449dbfd51accb77effab6ade9f311f0f631903d20c39"
 dependencies = [
  "chrono",
 ]
