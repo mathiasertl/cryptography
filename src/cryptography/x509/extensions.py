@@ -589,6 +589,11 @@ class DistributionPoint:
                 "You cannot provide both full_name and relative_name, at "
                 "least one must be None."
             )
+        if not full_name and not relative_name and not crl_issuer:
+            raise ValueError(
+                "Either full_name, relative_name or crl_issuer must be "
+                "provided."
+            )
 
         if full_name is not None:
             full_name = list(full_name)
