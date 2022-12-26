@@ -1052,6 +1052,7 @@ Serialization Encodings
 ~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: Encoding
+   :canonical: cryptography.hazmat.primitives._serialization.Encoding
 
     An enumeration for encoding types. Used with the ``private_bytes`` method
     available on

@@ -273,6 +273,7 @@ X.509 Certificate Object
 ~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: Certificate
+   :canonical: cryptography.x509.base.Certificate
 
     .. versionadded:: 0.7
 
@@ -517,6 +518,7 @@ X.509 CRL (Certificate Revocation List) Object
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: CertificateRevocationList
+   :canonical: cryptography.x509.base.CertificateRevocationList
 
     .. versionadded:: 1.0
 
@@ -679,6 +681,7 @@ X.509 Certificate Builder
 ~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: CertificateBuilder
+    :canonical: cryptography.x509.base.CertificateBuilder
 
     .. versionadded:: 1.0
 
@@ -823,6 +826,7 @@ X.509 CSR (Certificate Signing Request) Object
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: CertificateSigningRequest
+    :canonical: cryptography.x509.base.CertificateSigningRequest
 
     .. versionadded:: 0.9
 
@@ -1051,6 +1055,7 @@ X.509 Revoked Certificate Object
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 .. class:: RevokedCertificate
+   :canonical: cryptography.x509.base.RevokedCertificate
 
     .. versionadded:: 1.0
 
@@ -1228,6 +1233,7 @@ X.509 CSR (Certificate Signing Request) Builder Object
 
 
 .. class:: Name
+    :canonical: cryptography.x509.name.Name
 
     .. versionadded:: 0.8
 
@@ -1356,6 +1362,7 @@ X.509 CSR (Certificate Signing Request) Builder Object
         For version 3 X.509 certificates.
 
 .. class:: NameAttribute
+   :canonical: cryptography.x509.name.NameAttribute
 
     .. versionadded:: 0.8
 
@@ -1401,6 +1408,7 @@ X.509 CSR (Certificate Signing Request) Builder Object
 
 
 .. class:: RelativeDistinguishedName(attributes)
+   :canonical: cryptography.x509.name.RelativeDistinguishedName
 
     .. versionadded:: 1.6
 
@@ -1433,6 +1441,7 @@ X.509 CSR (Certificate Signing Request) Builder Object
 
 
 .. class:: ObjectIdentifier
+   :canonical: ObjectIdentifier
 
     .. versionadded:: 0.8
 
@@ -1452,6 +1461,7 @@ General Name Classes
 ~~~~~~~~~~~~~~~~~~~~
 
 .. class:: GeneralName
+   :canonical: cryptography.x509.general_name.GeneralName
 
     .. versionadded:: 0.9
 
@@ -1574,6 +1584,7 @@ X.509 Extensions
 ~~~~~~~~~~~~~~~~
 
 .. class:: Extensions
+   :canonical: cryptography.x509.extensions.Extension
 
     .. versionadded:: 0.9
 
@@ -1636,6 +1647,7 @@ X.509 Extensions
         Returns an instance of the extension type corresponding to the OID.
 
 .. class:: ExtensionType
+   :canonical: cryptography.x509.extensions.ExtensionType
 
     .. versionadded:: 1.0
 
@@ -1873,6 +1885,7 @@ X.509 Extensions
 
 
 .. class:: NameConstraints(permitted_subtrees, excluded_subtrees)
+   :canonical: cryptography.x509.extensions.NameConstraints
 
     .. versionadded:: 1.0
 
@@ -1907,6 +1920,7 @@ X.509 Extensions
         ``excluded_subtrees`` will be non-None.
 
 .. class:: AuthorityKeyIdentifier(key_identifier, authority_cert_issuer, authority_cert_serial_number)
+   :canonical: cryptography.x509.extensions.AuthorityKeyIdentifier
 
     .. versionadded:: 0.9
 
@@ -2106,6 +2120,7 @@ X.509 Extensions
 
 
 .. class:: IssuerAlternativeName(general_names)
+   :canonical: cryptography.x509.extensions.IssuerAlternativeName
 
     .. versionadded:: 1.0
 
@@ -2228,6 +2243,7 @@ X.509 Extensions
 
 
 .. class:: AuthorityInformationAccess(descriptions)
+   :canonical: cryptography.x509.extensions.AuthorityInformationAccess
 
     .. versionadded:: 0.9
 
@@ -2380,6 +2396,7 @@ X.509 Extensions
         revocation checks.
 
 .. class:: ReasonFlags
+   :canonical: cryptography.x509.extensions.ReasonFlags
 
     .. versionadded:: 0.9
 
@@ -2665,6 +2682,7 @@ These classes may be present within a :class:`CertificatePolicies` instance.
         display to the relying party when the certificate is used.
 
 .. class:: UserNotice(notice_reference, explicit_text)
+   :canonical: cryptography.x509.extensions.UserNotice
 
     .. versionadded:: 0.9
 
@@ -2687,6 +2705,7 @@ These classes may be present within a :class:`CertificatePolicies` instance.
         :type: str
 
 .. class:: NoticeReference(organization, notice_numbers)
+   :canonical: cryptography.x509.extensions.NoticeReference
 
     Notice reference can name an organization and provide information about
     notices related to the certificate. For example, it might identify the
