@@ -1129,6 +1129,8 @@ class Backend:
                 _DSAPublicKey,
                 _RSAPublicKey,
                 _EllipticCurvePublicKey,
+                _Ed448PublicKey,
+                _Ed25519PublicKey,
             ),
         ):
             raise TypeError(
