@@ -23,7 +23,7 @@ def get_response(session, url, token):
             requests.exceptions.ChunkedEncodingError,
             requests.exceptions.ConnectTimeout,
         ) as e:
-            print("Exception ({}) fetching {}, retrying".format(e, url))
+            print(f"Exception ({e}) fetching {url}, retrying")
             time.sleep(2)
             continue
         if response.status_code != 200:
@@ -37,9 +37,7 @@ def get_response(session, url, token):
         return response
     response = session.get(url, headers={"Authorization": "token " + token})
     if response.status_code != 200:
-        raise ValueError(
-            "Got HTTP {} fetching {}: ".format(response.status_code, url)
-        )
+        raise ValueError(f"Got HTTP {response.status_code} fetching {url}: ")
     return response
 
 
@@ -59,13 +57,22 @@ def main(platform, target):
     session.mount("http://", adapter)
 
     token = os.environ["GITHUB_TOKEN"]
-    print("Looking for: {}".format(target))
+    print(f"Looking for: {target}")
     runs_url = (
         "https://api.github.com/repos/pyca/infra/actions/workflows/"
         "{}/runs?branch=main&status=success".format(workflow)
     )
 
     response = get_response(session, runs_url, token).json()
+    # We see this happen occasionally. Maybe this will help debug it + retry
+    # for resilience.
+    if not response["workflow_runs"]:
+        print(
+            f"`workflow_runs` is empty for some reason, retrying. response: "
+            f"{response}"
+        )
+        response = get_response(session, runs_url, token).json()
+
     artifacts_url = response["workflow_runs"][0]["artifacts_url"]
     response = get_response(session, artifacts_url, token).json()
     for artifact in response["artifacts"]:
@@ -78,7 +85,7 @@ def main(platform, target):
                 os.path.join(path, artifact["name"])
             )
             return
-    raise ValueError("Didn't find {} in {}".format(target, response))
+    raise ValueError(f"Didn't find {target} in {response}")
 
 
 if __name__ == "__main__":

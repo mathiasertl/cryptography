@@ -1,12 +1,36 @@
 Changelog
 =========
 
-.. _v39-0-0:
+.. _v40-0-0:
 
-39.0.0 - `main`_
+40.0.0 - `main`_
 ~~~~~~~~~~~~~~~~
 
 .. note:: This version is not yet released and is under active development.
+
+* Support for Python 3.6 is deprecated and will be removed in the next
+  release.
+* Deprecated support for DSA keys in
+  :func:`~cryptography.hazmat.primitives.serialization.load_ssh_public_key`
+  and
+  :func:`~cryptography.hazmat.primitives.serialization.load_ssh_private_key`.
+* Deprecated support for OpenSSH serialization in
+  :class:`~cryptography.hazmat.primitives.asymmetric.dsa.DSAPublicKey`
+  and
+  :class:`~cryptography.hazmat.primitives.asymmetric.dsa.DSAPrivateKey`.
+* Added support for parsing SSH certificates in addition to public keys with
+  :func:`~cryptography.hazmat.primitives.serialization.load_ssh_public_identity`.
+  :func:`~cryptography.hazmat.primitives.serialization.load_ssh_public_key`
+  continues to support only public keys.
+* Added support for generating SSH certificates with
+  :class:`~cryptography.hazmat.primitives.serialization.SSHCertificateBuilder`.
+* Added :meth:`~cryptography.x509.Certificate.verify_directly_issued_by` to
+  :class:`~cryptography.x509.Certificate`.
+
+.. _v39-0-0:
+
+39.0.0 - 2023-01-01
+~~~~~~~~~~~~~~~~~~~
 
 * **BACKWARDS INCOMPATIBLE:** Support for OpenSSL 1.1.0 has been removed.
   Users on older version of OpenSSL will need to upgrade.

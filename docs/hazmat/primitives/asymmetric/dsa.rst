@@ -315,7 +315,6 @@ Key interfaces
         :attr:`~cryptography.hazmat.primitives.serialization.Encoding.DER`),
         format (
         :attr:`~cryptography.hazmat.primitives.serialization.PrivateFormat.TraditionalOpenSSL`,
-        :attr:`~cryptography.hazmat.primitives.serialization.PrivateFormat.OpenSSH`
         or
         :attr:`~cryptography.hazmat.primitives.serialization.PrivateFormat.PKCS8`)
         and encryption algorithm (such as
@@ -408,6 +407,7 @@ Key interfaces
             :class:`~cryptography.hazmat.primitives.asymmetric.utils.Prehashed`
             if the ``data`` you want to sign has already been hashed.
 
+        :returns: None
         :raises cryptography.exceptions.InvalidSignature: If the signature does
             not validate.
 

@@ -149,7 +149,7 @@ all begin with ``-----BEGIN {format}-----`` and end with ``-----END
 
         A keyword-only argument that defaults to ``False``. If ``True``
         RSA private keys will not be validated. This significantly speeds up
-        loading the keys, but is is :term:`unsafe` unless you are certain the
+        loading the keys, but is :term:`unsafe` unless you are certain the
         key is valid. User supplied keys should never be loaded with this
         parameter set to ``True``. If you do load an invalid key this way and
         attempt to use it OpenSSL may hang, crash, or otherwise misbehave.
@@ -267,7 +267,7 @@ the rest.
 
         A keyword-only argument that defaults to ``False``. If ``True``
         RSA private keys will not be validated. This significantly speeds up
-        loading the keys, but is is :term:`unsafe` unless you are certain the
+        loading the keys, but is :term:`unsafe` unless you are certain the
         key is valid. User supplied keys should never be loaded with this
         parameter set to ``True``. If you do load an invalid key this way and
         attempt to use it OpenSSL may hang, crash, or otherwise misbehave.
@@ -392,6 +392,11 @@ DSA keys look almost identical but begin with ``ssh-dss`` rather than
 
     .. versionadded:: 0.7
 
+    .. note::
+
+        SSH DSA key support is deprecated and will be removed in a future
+        release.
+
     Deserialize a public key from OpenSSH (:rfc:`4253` and
     `PROTOCOL.certkeys`_) encoded data to an
     instance of the public key type.
@@ -435,6 +440,11 @@ An example ECDSA key in OpenSSH format::
 
     .. versionadded:: 3.0
 
+    .. note::
+
+        SSH DSA key support is deprecated and will be removed in a future
+        release.
+
     Deserialize a private key from OpenSSH encoded data to an
     instance of the private key type.
 
@@ -458,6 +468,301 @@ An example ECDSA key in OpenSSH format::
 
     :raises cryptography.exceptions.UnsupportedAlgorithm: If the serialized
         key is of a type that is not supported.
+
+
+OpenSSH Certificate
+~~~~~~~~~~~~~~~~~~~
+
+The format used by OpenSSH for certificates, as specified in
+`PROTOCOL.certkeys`_.
+
+.. function:: load_ssh_public_identity(data)
+
+    .. versionadded:: 40.0
+
+    .. note::
+
+        This function does not support parsing certificates with DSA public
+        keys or signatures from DSA certificate authorities. DSA is a
+        deprecated algorithm and should not be used.
+
+    Deserialize an OpenSSH encoded identity to an instance of
+    :class:`SSHCertificate` or the appropriate public key type.
+    Parsing a certificate does not verify anything. It is up to the caller to
+    perform any necessary verification.
+
+    :param data: The OpenSSH encoded data.
+    :type data: bytes
+
+    :returns: :class:`SSHCertificate` or one of
+        :class:`~cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey`,
+        :class:`~cryptography.hazmat.primitives.asymmetric.dsa.DSAPublicKey`,
+        :class:`~cryptography.hazmat.primitives.asymmetric.ec.EllipticCurvePublicKey`
+        , or
+        :class:`~cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PublicKey`.
+
+    :raises ValueError: If the OpenSSH data could not be properly decoded.
+
+    :raises cryptography.exceptions.UnsupportedAlgorithm: If the data contains
+        a public key type that is not supported.
+
+
+.. class:: SSHCertificate
+
+    .. versionadded:: 40.0
+
+    .. attribute:: nonce
+
+        :type: bytes
+
+        The nonce field is a CA-provided random value of arbitrary length
+        (but typically 16 or 32 bytes) included to make attacks that depend on
+        inducing collisions in the signature hash infeasible.
+
+    .. method:: public_key()
+
+        :class:`~cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey`,
+        :class:`~cryptography.hazmat.primitives.asymmetric.ec.EllipticCurvePublicKey`
+        or
+        :class:`~cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PublicKey`
+
+        The public key contained in the certificate.
+
+    .. attribute:: serial
+
+        :type: int
+
+        Serial is an optional certificate serial number set by the CA to
+        provide an abbreviated way to refer to certificates from that CA.
+        If a CA does not wish to number its certificates, it must set this
+        field to zero.
+
+    .. attribute:: type
+
+        :type: :class:`SSHCertificateType`
+
+        Type specifies whether this certificate is for identification of a user
+        or a host.
+
+    .. attribute:: key_id
+
+        :type: bytes
+
+        This is a free-form text field that is filled in by the CA at the time
+        of signing; the intention is that the contents of this field are used to
+        identify the identity principal in log messages.
+
+    .. attribute:: valid_principals
+
+        :type: list[bytes]
+
+        "valid principals" is a list containing one or more principals as
+        byte strings. These principals list the names for which this
+        certificate is valid; hostnames for host certificates and
+        usernames for user certificates. As a special case, an
+        empty list means the certificate is valid for any principal of
+        the specified type.
+
+    .. attribute:: valid_after
+
+        :type: int
+
+        An integer representing the Unix timestamp (in UTC) after which the
+        certificate is valid. **This time is inclusive.**
+
+    .. attribute:: valid_before
+
+        :type: int
+
+        An integer representing the Unix timestamp (in UTC) before which the
+        certificate is valid. **This time is not inclusive.**
+
+    .. attribute:: critical_options
+
+        :type: dict[bytes, bytes]
+
+        Critical options is a dict of zero or more options that are
+        critical for the certificate to be considered valid. If
+        any of these options are not supported by the implementation, the
+        certificate must be rejected.
+
+    .. attribute:: extensions
+
+        :type: dict[bytes, bytes]
+
+        Extensions is a dict of zero or more options that are
+        non-critical for the certificate to be considered valid. If any of
+        these options are not supported by the implementation, the
+        implementation may safely ignore them.
+
+    .. method:: signature_key()
+
+        :class:`~cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey`,
+        :class:`~cryptography.hazmat.primitives.asymmetric.ec.EllipticCurvePublicKey`
+        or
+        :class:`~cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PublicKey`
+
+        The public key used to sign the certificate.
+
+    .. method:: verify_cert_signature()
+
+        .. warning::
+
+            This method does not validate anything about whether the
+            signing key is trusted! Callers are responsible for validating
+            trust in the signer.
+
+        Validates that the signature on the certificate was created by
+        the private key associated with the certificate's signature key
+        and that the certificate has not been changed since signing.
+
+        :return: None
+        :raises: :class:`~cryptography.exceptions.InvalidSignature` if the
+            signature is invalid.
+
+    .. method:: public_bytes()
+
+        :return: The serialized certificate in OpenSSH format.
+        :rtype: bytes
+
+
+.. class:: SSHCertificateType
+
+    .. versionadded:: 40.0
+
+    An enumeration of the types of SSH certificates.
+
+    .. attribute:: USER
+
+        The cert is intended for identification of a user. Corresponds to the
+        value ``1``.
+
+    .. attribute:: HOST
+
+        The cert is intended for identification of a host. Corresponds to the
+        value ``2``.
+
+SSH Certificate Builder
+~~~~~~~~~~~~~~~~~~~~~~~
+
+.. class:: SSHCertificateBuilder
+
+    .. versionadded:: 40.0
+
+    .. note::
+
+        This builder does not support generating certificates with DSA public
+        keys or creating signatures with DSA certificate authorities. DSA is a
+        deprecated algorithm and should not be used.
+
+    .. doctest::
+
+        >>> import datetime
+        >>> from cryptography.hazmat.primitives.asymmetric import ec
+        >>> from cryptography.hazmat.primitives.serialization import (
+        ...     SSHCertificateType, SSHCertificateBuilder
+        ... )
+        >>> signing_key = ec.generate_private_key(ec.SECP256R1())
+        >>> private_key = ec.generate_private_key(ec.SECP256R1())
+        >>> public_key = private_key.public_key()
+        >>> valid_after = datetime.datetime(
+        ...     2023, 1, 1, 1, tzinfo=datetime.timezone.utc
+        ... ).timestamp()
+        >>> valid_before = datetime.datetime(
+        ...     2023, 7, 1, 1, tzinfo=datetime.timezone.utc
+        ... ).timestamp()
+        >>> key_id = b"a_key_id"
+        >>> valid_principals = [b"eve", b"alice"]
+        >>> builder = (
+        ...     SSHCertificateBuilder()
+        ...     .public_key(public_key)
+        ...     .type(SSHCertificateType.USER)
+        ...     .valid_before(valid_before)
+        ...     .valid_after(valid_after)
+        ...     .key_id(b"a_key_id")
+        ...     .valid_principals(valid_principals)
+        ...     .add_extension(b"no-touch-required", b"")
+        ... )
+        >>> builder.sign(private_key).public_bytes()
+        b'...'
+
+    .. method:: public_key(public_key)
+
+        :param public_key: The public key to be included in the certificate.
+            This value is required.
+        :type public_key: :class:`~cryptography.hazmat.primitives.asymmetric.rsa.RSAPublicKey`,
+            :class:`~cryptography.hazmat.primitives.asymmetric.ec.EllipticCurvePublicKey`
+            or
+            :class:`~cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PublicKey`
+
+    .. method:: serial(serial)
+
+        :param int serial: The serial number to be included in the certificate.
+            This is not a required value and will be set to zero if not
+            provided. Value must be between 0 and 2:sup:`64` - 1, inclusive.
+
+    .. method:: type(type)
+
+        :param type: The type of the certificate. There are two options,
+            user or host.
+        :type type: :class:`SSHCertificateType`
+
+    .. method:: key_id(key_id)
+
+        :param key_id: The key ID to be included in the certificate. This is
+            not a required value.
+        :type key_id: bytes
+
+    .. method:: valid_principals(valid_principals)
+
+        :param valid_principals: A list of principals that the certificate is
+            valid for. This is a required value unless
+            :meth:`valid_for_all_principals` has been called.
+        :type valid_principals: list[bytes]
+
+    .. method:: valid_for_all_principals()
+
+        Marks the certificate as valid for all principals. This cannot be
+        set if principals have been added via :meth:`valid_principals`.
+
+    .. method:: valid_after(valid_after)
+
+        :param int valid_after: The Unix timestamp (in UTC) that marks the
+            activation time for the certificate. This is a required value.
+
+    .. method:: valid_before(valid_before)
+
+        :param int valid_before: The Unix timestamp (in UTC) that marks the
+            expiration time for the certificate. This is a required value.
+
+    .. method:: add_critical_option(name, value)
+
+        :param name: The name of the critical option to add. No duplicates
+            are allowed.
+        :type name: bytes
+        :param value: The value of the critical option to add. This is
+            commonly an empty byte string.
+        :type value: bytes
+
+    .. method:: add_extension(name, value)
+
+        :param name: The name of the extension to add. No duplicates are
+            allowed.
+        :type name: bytes
+        :param value: The value of the extension to add.
+        :type value: bytes
+
+    .. method:: sign(private_key)
+
+        :param private_key: The private key that will be used to sign the
+            certificate.
+        :type private_key: :class:`~cryptography.hazmat.primitives.asymmetric.rsa.RSAPrivateKey`,
+            :class:`~cryptography.hazmat.primitives.asymmetric.ec.EllipticCurvePrivateKey`
+            or
+            :class:`~cryptography.hazmat.primitives.asymmetric.ed25519.Ed25519PrivateKey`
+
+        :return: The signed certificate.
+        :rtype: :class:`SSHCertificate`
 
 PKCS12
 ~~~~~~

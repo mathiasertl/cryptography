@@ -31,7 +31,7 @@ class DHParameterNumbers:
 
         if p.bit_length() < _MIN_MODULUS_SIZE:
             raise ValueError(
-                "p (modulus) must be at least {}-bit".format(_MIN_MODULUS_SIZE)
+                f"p (modulus) must be at least {_MIN_MODULUS_SIZE}-bit"
             )
 
         self._p = p
@@ -170,7 +170,8 @@ DHParametersWithSerialization = DHParameters
 
 
 class DHPublicKey(metaclass=abc.ABCMeta):
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def key_size(self) -> int:
         """
         The bit length of the prime modulus.
@@ -203,7 +204,8 @@ DHPublicKeyWithSerialization = DHPublicKey
 
 
 class DHPrivateKey(metaclass=abc.ABCMeta):
-    @abc.abstractproperty
+    @property
+    @abc.abstractmethod
     def key_size(self) -> int:
         """
         The bit length of the prime modulus.

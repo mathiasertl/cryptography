@@ -220,6 +220,8 @@ X.509
   legacy PEM header format.
 * ``cryptography.io.chain.pem`` - The same as ``cryptography.io.pem``,
   but ``rapidssl_sha256_ca_g3.pem`` is concatenated to the end.
+* ``cryptography.io.with_headers.pem`` - The same as ``cryptography.io.pem``,
+  but with an unrelated (encrypted) private key concatenated to the end.
 * ``cryptography.io.chain_with_garbage.pem`` - The same as
   ``cryptography.io.chain.pem``, but with other sections and text around it.
 * ``cryptography.io.with_garbage.pem`` - The same as ``cryptography.io.pem``,
@@ -478,6 +480,9 @@ Custom X.509 Vectors
   with ``asymmetric/PKCS8/rsa_pss_2048.pem`` as its key.
 * ``long-form-name-attribute.pem`` - A certificate with ``subject`` and ``issuer``
   names containing attributes whose value's tag is encoded in long-form.
+* ``mismatch_inner_outer_sig_algorithm.der`` - A leaf certificate derived from
+  ``x509/cryptography.io.pem`` but modifying the ``tbs_cert.signature_algorithm``
+  OID to not match the outer signature algorithm OID.
 
 Custom X.509 Request Vectors
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -822,6 +827,39 @@ using command-line tools from OpenSSH_7.6p1 package.
 * ``rsa-psw.key``, ``rsa-psw.key.pub`` -
   Password-protected RSA-2048 private key and corresponding public key.
   Password is "password".
+
+Custom OpenSSH Certificate Test Vectors
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* ``p256-p256-duplicate-extension.pub`` - A certificate with a duplicate
+  extension.
+* ``p256-p256-non-lexical-extensions.pub`` - A certificate with extensions
+  in non-lexical order.
+* ``p256-p256-duplicate-crit-opts.pub`` - A certificate with a duplicate
+  critical option.
+* ``p256-p256-non-lexical-crit-opts.pub`` - A certificate with critical
+  options in non-lexical order.
+* ``dsa-p256.pub`` - A certificate with a DSA public key signed by a P256
+  CA.
+* ``p256-dsa.pub`` - A certificate with a P256 public key signed by a DSA
+  CA.
+* ``p256-p256-broken-signature-key-type.pub`` - A certificate with a P256
+  public key signed by a P256 CA, but the signature key type is set to
+  ``rsa-sha2-512``.
+* ``p256-p256-empty-principals.pub`` - A certificate with a P256 public
+  key signed by a P256 CA with an empty valid principals list.
+* ``p256-p256-invalid-cert-type.pub`` - A certificate with a P256 public
+  key signed by a P256 CA with an invalid certificate type.
+* ``p256-p384.pub`` - A certificate with a P256 public key signed by a P384
+  CA.
+* ``p256-p521.pub`` - A certificate with a P256 public key signed by a P521
+  CA.
+* ``p256-rsa-sha1.pub`` - A certificate with a P256 public key signed by a
+  RSA CA using SHA1.
+* ``p256-rsa-sha256.pub`` - A certificate with a P256 public key signed by
+  a RSA CA using SHA256.
+* ``p256-rsa-sha512.pub`` - A certificate with a P256 public key signed by
+  a RSA CA using SHA512.
 
 Hashes
 ~~~~~~

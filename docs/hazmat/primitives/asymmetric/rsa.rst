@@ -481,7 +481,7 @@ is unavailable.
 
             A keyword-only argument that defaults to ``False``. If ``True``
             RSA private keys will not be validated. This significantly speeds up
-            loading the keys, but is is :term:`unsafe` unless you are certain
+            loading the keys, but is :term:`unsafe` unless you are certain
             the key is valid. User supplied keys should never be loaded with
             this parameter set to ``True``. If you do load an invalid key this
             way and attempt to use it OpenSSL may hang, crash, or otherwise
@@ -729,6 +729,7 @@ Key interfaces
             :class:`~cryptography.hazmat.primitives.asymmetric.utils.Prehashed`
             if the ``data`` you want to verify has already been hashed.
 
+        :returns: None
         :raises cryptography.exceptions.InvalidSignature: If the signature does
             not validate.
 

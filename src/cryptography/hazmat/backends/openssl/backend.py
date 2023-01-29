@@ -30,14 +30,14 @@ from cryptography.hazmat.backends.openssl.ec import (
     _EllipticCurvePrivateKey,
     _EllipticCurvePublicKey,
 )
-from cryptography.hazmat.backends.openssl.ed25519 import (
-    _Ed25519PrivateKey,
-    _Ed25519PublicKey,
-)
 from cryptography.hazmat.backends.openssl.ed448 import (
     _ED448_KEY_SIZE,
     _Ed448PrivateKey,
     _Ed448PublicKey,
+)
+from cryptography.hazmat.backends.openssl.ed25519 import (
+    _Ed25519PrivateKey,
+    _Ed25519PublicKey,
 )
 from cryptography.hazmat.backends.openssl.hashes import _HashContext
 from cryptography.hazmat.backends.openssl.hmac import _HMACContext
@@ -49,13 +49,13 @@ from cryptography.hazmat.backends.openssl.rsa import (
     _RSAPrivateKey,
     _RSAPublicKey,
 )
-from cryptography.hazmat.backends.openssl.x25519 import (
-    _X25519PrivateKey,
-    _X25519PublicKey,
-)
 from cryptography.hazmat.backends.openssl.x448 import (
     _X448PrivateKey,
     _X448PublicKey,
+)
+from cryptography.hazmat.backends.openssl.x25519 import (
+    _X25519PrivateKey,
+    _X25519PublicKey,
 )
 from cryptography.hazmat.bindings._rust import x509 as rust_x509
 from cryptography.hazmat.bindings.openssl import binding
@@ -65,11 +65,11 @@ from cryptography.hazmat.primitives.asymmetric import (
     dh,
     dsa,
     ec,
-    ed25519,
     ed448,
+    ed25519,
     rsa,
-    x25519,
     x448,
+    x25519,
 )
 from cryptography.hazmat.primitives.asymmetric.padding import (
     MGF1,
@@ -1307,7 +1307,7 @@ class Backend:
             return _EllipticCurvePrivateKey(self, ec_cdata, evp_pkey)
         else:
             raise UnsupportedAlgorithm(
-                "Backend object does not support {}.".format(curve.name),
+                f"Backend object does not support {curve.name}.",
                 _Reasons.UNSUPPORTED_ELLIPTIC_CURVE,
             )
 
@@ -1445,7 +1445,7 @@ class Backend:
         curve_nid = self._lib.OBJ_sn2nid(curve_name.encode())
         if curve_nid == self._lib.NID_undef:
             raise UnsupportedAlgorithm(
-                "{} is not a supported elliptic curve".format(curve.name),
+                f"{curve.name} is not a supported elliptic curve",
                 _Reasons.UNSUPPORTED_ELLIPTIC_CURVE,
             )
         return curve_nid
@@ -1461,17 +1461,17 @@ class Backend:
         finally:
             self._lib.BN_CTX_end(bn_ctx)
 
-    def _ec_key_determine_group_get_func(self, ctx):
+    def _ec_key_determine_group_get_func(self, ec_key):
         """
         Given an EC_KEY determine the group and what function is required to
         get point coordinates.
         """
-        self.openssl_assert(ctx != self._ffi.NULL)
+        self.openssl_assert(ec_key != self._ffi.NULL)
 
         nid_two_field = self._lib.OBJ_sn2nid(b"characteristic-two-field")
         self.openssl_assert(nid_two_field != self._lib.NID_undef)
 
-        group = self._lib.EC_KEY_get0_group(ctx)
+        group = self._lib.EC_KEY_get0_group(ec_key)
         self.openssl_assert(group != self._ffi.NULL)
 
         method = self._lib.EC_GROUP_method_of(group)
@@ -2507,7 +2507,7 @@ class GetCipherByName:
 
 
 def _get_xts_cipher(backend: Backend, cipher: AES, mode):
-    cipher_name = "aes-{}-xts".format(cipher.key_size // 2)
+    cipher_name = f"aes-{cipher.key_size // 2}-xts"
     return backend._lib.EVP_get_cipherbyname(cipher_name.encode("ascii"))
 
 

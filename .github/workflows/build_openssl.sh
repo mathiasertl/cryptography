@@ -9,6 +9,10 @@ shlib_sed() {
   sed -i "s/^SHLIB_MINOR=.*/SHLIB_MINOR=0.0/" Makefile
   sed -i "s/^SHLIB_VERSION_NUMBER=.*/SHLIB_VERSION_NUMBER=100.0.0/" Makefile
 }
+shlib_sed_3() {
+  # OpenSSL 3 changes how it does the shlib versioning
+  sed -i "s/^SHLIB_VERSION=.*/SHLIB_VERSION=100/" VERSION.dat
+}
 
 if [[ "${TYPE}" == "openssl" ]]; then
   if [[ "${VERSION}" =~ ^[0-9a-f]{40}$ ]]; then
@@ -20,9 +24,18 @@ if [[ "${TYPE}" == "openssl" ]]; then
     tar zxf "openssl-${VERSION}.tar.gz"
     pushd "openssl-${VERSION}"
   fi
+  # For OpenSSL 3 we need to call this before config
+  if [[ "${VERSION}" =~ ^3. ]] || [[ "${VERSION}" =~ ^[0-9a-f]{40}$ ]]; then
+    shlib_sed_3
+  fi
+
   # CONFIG_FLAGS is a global coming from a previous step
   ./config ${CONFIG_FLAGS} -fPIC --prefix="${OSSL_PATH}"
-  shlib_sed
+
+  # For OpenSSL 1 we need to call this after config
+  if [[ "${VERSION}" =~ ^1. ]]; then
+    shlib_sed
+  fi
   make depend
   make -j"$(nproc)"
   # avoid installing the docs (for performance)
@@ -55,15 +68,12 @@ elif [[ "${TYPE}" == "boringssl" ]]; then
   git checkout "${VERSION}"
   mkdir build
   pushd build
-  cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON
+  # Find the default rust target based on what rustc is built for
+  cmake .. -DCMAKE_POSITION_INDEPENDENT_CODE=ON -DRUST_BINDINGS="$(rustc -V --verbose | grep 'host: ' | sed 's/host: //')" -DCMAKE_INSTALL_PREFIX="${OSSL_PATH}"
   make -j"$(nproc)"
-  mkdir -p "${OSSL_PATH}/lib/"
-  mkdir -p "${OSSL_PATH}/include/"
-  mkdir -p "${OSSL_PATH}/bin/"
-  cp -r ../include/openssl "${OSSL_PATH}/include/"
-  cp ssl/libssl.a "${OSSL_PATH}/lib/"
-  cp crypto/libcrypto.a "${OSSL_PATH}/lib/"
-  cp tool/bssl "${OSSL_PATH}/bin/openssl"
+  make install
+  # BoringSSL doesn't have a bin/openssl and we use that to detect success
+  touch "${OSSL_PATH}/bin/openssl"
   popd
   popd
 fi

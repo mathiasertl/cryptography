@@ -33,7 +33,7 @@ from ...utils import (
     load_vectors_from_file,
     raises_unsupported_algorithm,
 )
-from ..primitives.fixtures_rsa import RSA_KEY_2048, RSA_KEY_512
+from ..primitives.fixtures_rsa import RSA_KEY_512, RSA_KEY_2048
 
 
 def skip_if_libre_ssl(openssl_version):
@@ -134,7 +134,7 @@ class TestOpenSSL:
         assert len(errors) == 10
 
     def test_ssl_ciphers_registered(self):
-        meth = backend._lib.SSLv23_method()
+        meth = backend._lib.TLS_method()
         ctx = backend._lib.SSL_CTX_new(meth)
         assert ctx != backend._ffi.NULL
         backend._lib.SSL_CTX_free(ctx)
