@@ -23,6 +23,13 @@ Changelog
   instances of classes in
   :mod:`~cryptography.hazmat.primitives.asymmetric.padding`
   comparable.
+* Added `salt_length` property to
+  :class:`~cryptography.hazmat.primitives.asymmetric.padding.PSS`.
+* Added `label` property to
+  :class:`~cryptography.hazmat.primitives.asymmetric.padding.OAEP`.
+* Added `algorithm` property to
+  :class:`~cryptography.hazmat.primitives.asymmetric.padding.MGF1`.
+
 
 .. _v45-0-6:
 

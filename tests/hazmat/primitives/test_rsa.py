@@ -1656,6 +1656,13 @@ class TestPSS:
         assert pss.mgf == mgf
         assert pss.mgf == pss._mgf
 
+    def test_salt_length_property(self):
+        algorithm = hashes.SHA256()
+        mgf = padding.MGF1(algorithm)
+        pss = padding.PSS(mgf=mgf, salt_length=padding.PSS.MAX_LENGTH)
+        assert pss.salt_length == padding.PSS.MAX_LENGTH
+        assert pss._salt_length == padding.PSS.MAX_LENGTH
+
     @pytest.mark.parametrize("xof", [hashes.SHA256(), hashes.SHA512()])
     @pytest.mark.parametrize(
         "salt_length",
@@ -1727,6 +1734,11 @@ class TestMGF1:
         mgf = padding.MGF1(algorithm)
         assert mgf._algorithm == algorithm
 
+    def test_algorithm_property(self):
+        mgf = padding.MGF1(hashes.SHA256())
+        assert mgf.algorithm == hashes.SHA256()
+        assert mgf._algorithm == hashes.SHA256()
+
 
 class TestOAEP:
     def test_invalid_algorithm(self):
@@ -1744,6 +1756,13 @@ class TestOAEP:
         oaep = padding.OAEP(mgf=mgf, algorithm=algorithm, label=None)
         assert oaep.algorithm == algorithm
         assert oaep.algorithm == oaep._algorithm
+
+    def test_label_property(self):
+        algorithm = hashes.SHA256()
+        mgf = padding.MGF1(algorithm)
+        oaep = padding.OAEP(mgf=mgf, algorithm=algorithm, label=None)
+        assert oaep.label is None
+        assert oaep._label is None
 
     def test_mgf_property(self):
         algorithm = hashes.SHA256()
