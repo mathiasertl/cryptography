@@ -1,130 +1,40 @@
 Changelog
 =========
 
-.. _v47-0-0:
+.. _v46-0-0:
 
-47.0.0 - `main`_
+46.0.0 - `main`_
 ~~~~~~~~~~~~~~~~
 
 .. note:: This version is not yet released and is under active development.
 
-* **BACKWARDS INCOMPATIBLE:** Support for OpenSSL 1.1.x has been removed.
-  OpenSSL 3.0.0 or later is now required. LibreSSL, BoringSSL, and AWS-LC
-  continue to be supported.
-* **BACKWARDS INCOMPATIBLE:** Dropped support for LibreSSL < 4.1.
-* **BACKWARDS INCOMPATIBLE:** Loading keys with unsupported algorithms or
-  keys with unsupported explicit curve encodings now raises
-  :class:`~cryptography.exceptions.UnsupportedAlgorithm` instead of
-  ``ValueError``. This change affects
-  :func:`~cryptography.hazmat.primitives.serialization.load_pem_private_key`,
-  :func:`~cryptography.hazmat.primitives.serialization.load_der_private_key`,
-  :func:`~cryptography.hazmat.primitives.serialization.load_pem_public_key`,
-  :func:`~cryptography.hazmat.primitives.serialization.load_der_public_key`,
-  and :meth:`~cryptography.x509.Certificate.public_key` when called on
-  certificates with unsupported public key algorithms.
-* Updated the minimum supported Rust version (MSRV) to 1.83.0, from 1.74.0.
-* Added support for loading elliptic curve keys that contain explicit encodings
-  of the curves ``secp256r1``, ``secp384r1``, and ``secp521r1``.
-* Support for ``x86_64`` macOS (including publishing wheels) is deprecated
-  and will be removed in the next release. We will switch to publishing an
-  ``arm64`` only wheel for macOS.
-* Support for 32-bit Windows (including publishing wheels) is deprecated
-  and will be removed in the next release. Users should move to a 64-bit
-  Python installation.
-* ``public_bytes`` and ``private_bytes`` methods on keys now raise
-  ``TypeError`` (instead of ``ValueError``) if an invalid encoding is provided
-  for the given ``format``.
-* Moved :class:`~cryptography.hazmat.decrepit.ciphers.modes.CFB`,
-  :class:`~cryptography.hazmat.decrepit.ciphers.modes.OFB`, and
-  :class:`~cryptography.hazmat.decrepit.ciphers.modes.CFB8` into
-  :doc:`/hazmat/decrepit/index` and deprecated them in the ``modes`` module.
-  They will be removed from the ``modes`` module in 49.0.0.
-* Moved :class:`~cryptography.hazmat.primitives.ciphers.algorithms.Camellia`
-  into  :doc:`/hazmat/decrepit/index` and deprecated it in the ``cipher`` module.
-  It will be removed from the ``cipher`` module in 49.0.0.
-* Added :meth:`~cryptography.hazmat.primitives.kdf.hkdf.HKDF.extract`
-  to :class:`~cryptography.hazmat.primitives.kdf.hkdf.HKDF`. The previous
-  private implementation will be removed in 49.0.0.
-* Added support for :class:`~cryptography.hazmat.primitives.kdf.argon2.Argon2d`
-  and :class:`~cryptography.hazmat.primitives.kdf.argon2.Argon2i`
-  when using OpenSSL 3.2.0+.
-* Added ``derive_into`` methods to
-  :class:`~cryptography.hazmat.primitives.kdf.hkdf.HKDF`,
-  :class:`~cryptography.hazmat.primitives.kdf.hkdf.HKDFExpand`,
-  :class:`~cryptography.hazmat.primitives.kdf.concatkdf.ConcatKDFHash`,
-  :class:`~cryptography.hazmat.primitives.kdf.concatkdf.ConcatKDFHMAC`,
-  :class:`~cryptography.hazmat.primitives.kdf.argon2.Argon2id`,
-  :class:`~cryptography.hazmat.primitives.kdf.pbkdf2.PBKDF2HMAC`,
-  :class:`~cryptography.hazmat.primitives.kdf.kbkdf.KBKDFHMAC`,
-  :class:`~cryptography.hazmat.primitives.kdf.kbkdf.KBKDFCMAC`,
-  :class:`~cryptography.hazmat.primitives.kdf.scrypt.Scrypt`, and
-  :class:`~cryptography.hazmat.primitives.kdf.x963kdf.X963KDF` to allow
-  deriving keys directly into pre-allocated buffers.
-* Added ``encrypt_into`` and ``decrypt_into`` methods to
-  :class:`~cryptography.hazmat.primitives.ciphers.aead.AESCCM`,
-  :class:`~cryptography.hazmat.primitives.ciphers.aead.AESGCM`,
-  :class:`~cryptography.hazmat.primitives.ciphers.aead.AESGCMSIV`,
-  :class:`~cryptography.hazmat.primitives.ciphers.aead.AESOCB3`,
-  :class:`~cryptography.hazmat.primitives.ciphers.aead.AESSIV`, and
-  :class:`~cryptography.hazmat.primitives.ciphers.aead.ChaCha20Poly1305` to
-  allow encrypting directly into a pre-allocated buffer.
-
-.. _v46-0-3:
-
-46.0.3 - 2025-10-15
-~~~~~~~~~~~~~~~~~~~
-
-* Fixed compilation when using LibreSSL 4.2.0.
-
-.. _v46-0-2:
-
-46.0.2 - 2025-09-30
-~~~~~~~~~~~~~~~~~~~
-
-* Updated Windows, macOS, and Linux wheels to be compiled with OpenSSL 3.5.4.
-
-.. _v46-0-1:
-
-46.0.1 - 2025-09-16
-~~~~~~~~~~~~~~~~~~~
-
-* Fixed an issue where users installing via ``pip`` on Python 3.14 development
-  versions would not properly install a dependency.
-* Fixed an issue building the free-threaded macOS 3.14 wheels.
-
-.. _v46-0-0:
-
-46.0.0 - 2025-09-16
-~~~~~~~~~~~~~~~~~~~
-
 * **BACKWARDS INCOMPATIBLE:** Support for Python 3.7 has been removed.
 * Support for OpenSSL < 3.0 is deprecated and will be removed in the next
   release.
-* Support for ``x86_64`` macOS (including publishing wheels) is deprecated
-  and will be removed in two releases. We will switch to publishing an
-  ``arm64`` only wheel for macOS.
-* Support for 32-bit Windows (including publishing wheels) is deprecated
-  and will be removed in two releases. Users should move to a 64-bit
-  Python installation.
-* Updated Windows, macOS, and Linux wheels to be compiled with OpenSSL 3.5.3.
 * We now build ``ppc64le`` ``manylinux`` wheels and publish them to PyPI.
-* We now build ``win_arm64`` (Windows on Arm) wheels and publish them to PyPI.
-* Added support for free-threaded Python 3.14.
 * Removed the deprecated ``get_attribute_for_oid`` method on
   :class:`~cryptography.x509.CertificateSigningRequest`. Users should use
   :meth:`~cryptography.x509.Attributes.get_attribute_for_oid` instead.
 * Removed the deprecated ``CAST5``, ``SEED``, ``IDEA``, and ``Blowfish``
   classes from the cipher module. These are still available in
   :doc:`/hazmat/decrepit/index`.
-* In X.509, when performing a PSS signature with a SHA-3 hash, it is now
-  encoded with the official NIST SHA3 OID.
+* Make instances of
+  :class:`~cryptography.hazmat.primitives.hashes.HashAlgorithm` as well as
+  instances of classes in
+  :mod:`~cryptography.hazmat.primitives.asymmetric.padding`
+  comparable.
+* Added `salt_length` property to
+  :class:`~cryptography.hazmat.primitives.asymmetric.padding.PSS`.
+* Added `label` property to
+  :class:`~cryptography.hazmat.primitives.asymmetric.padding.OAEP`.
+* Added `algorithm` property to
+  :class:`~cryptography.hazmat.primitives.asymmetric.padding.MGF1`.
+* Make instances of
+  :class:`~cryptography.hazmat.primitives.hashes.HashAlgorithm` as well as
+  instances of classes in
+  :mod:`~cryptography.hazmat.primitives.asymmetric.padding`
+  comparable.
 
-.. _v45-0-7:
-
-45.0.7 - 2025-09-01
-~~~~~~~~~~~~~~~~~~~
-
-* Added a function to support an upcoming ``pyOpenSSL`` release.
 
 .. _v45-0-6:
 

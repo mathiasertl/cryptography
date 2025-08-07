@@ -76,6 +76,10 @@ class PSS(AsymmetricPadding):
     def mgf(self) -> MGF:
         return self._mgf
 
+    @property
+    def salt_length(self) -> int | _MaxLength | _Auto | _DigestLength:
+        return self._salt_length
+
 
 class OAEP(AsymmetricPadding):
     name = "EME-OAEP"
@@ -106,6 +110,10 @@ class OAEP(AsymmetricPadding):
         return self._algorithm
 
     @property
+    def label(self) -> bytes | None:
+        return self._label
+
+    @property
     def mgf(self) -> MGF:
         return self._mgf
 
@@ -130,6 +138,10 @@ class MGF1(MGF):
 
     def __eq__(self, other: typing.Any) -> bool:
         return isinstance(other, MGF1) and self._algorithm == other._algorithm
+
+    @property
+    def algorithm(self) -> hashes.HashAlgorithm:
+        return self._algorithm
 
 
 def calculate_max_pss_salt_length(
